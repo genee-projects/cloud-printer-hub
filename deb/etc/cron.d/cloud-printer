@@ -1,0 +1,5 @@
+# 由于 /var/log 是固定大小 20M 的, 所以需要每小时清空以防空间占满
+41 * * * * root /etc/cloud-printer/logrotate.sh
+
+# 每晚重启 cloud_printer 业务进程 (具体重启哪些进程请看脚本内的 patter)
+14 0 * * * root /etc/cloud-printer/reboot.sh

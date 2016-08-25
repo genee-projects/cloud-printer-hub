@@ -1,0 +1,118 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          cloud-printer
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start cloud-printer
+# Description:       This file should be used to construct scripts to be
+#                    placed in /etc/init.d.
+### END INIT INFO
+
+# Do NOT "set -e"
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="cloud-printer service"
+NAME="cloud-printer"
+NODE_PATH=/usr/bin/node
+NODE_SCRIPT="/home/genee/cloud-printer/cli/app.js"
+# NODE_OPTS="--max-new-space-size=1024 --max-old-space-size=30"
+PIDFILE="/var/run/cloud-printer.pid"
+LOG="/var/log/cloud-printer.log"
+SCRIPTNAME=/etc/init.d/$NAME
+
+OPTS=" >>$LOG 2>&1"
+
+# Exit if the package is not installed
+[ -x "${NODE_PATH}" ] || exit 0
+[ -f "${NODE_SCRIPT}" ] || exit 0
+
+mkdir -p /var/log/cloud-printer
+mkdir -p /var/run/cloud-printer
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting..." >> $LOG
+	# Return
+	#   0 if daemon has been started
+	#   1 if daemon was already running
+	#   2 if daemon could not be started
+
+    # 为了显示日志标准输出, 使用--startas /bin/bash
+
+	start-stop-daemon --start --test --quiet  --pidfile $PIDFILE -b -m  --startas /bin/bash -- -c "exec  ${NODE_PATH} ${NODE_SCRIPT}"  > /dev/null \
+		|| return 1
+	start-stop-daemon --start --quiet  --pidfile $PIDFILE -b -m --startas /bin/bash -- -c \
+        "exec  ${NODE_PATH} ${NODE_SCRIPT} ${OPTS}"  \
+		|| return 2
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" >>$LOG
+	# Return
+	#   0 if daemon has been stopped
+	#   1 if daemon was already stopped
+	#   2 if daemon could not be stopped
+	#   other if a failure occurred
+	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE 
+	RETVAL="$?"
+	[ "$RETVAL" = 2 ] && return 2
+	# Many daemons don't delete their pidfiles when they exit.
+	rm -f $PIDFILE
+	return "$RETVAL"
+}
+
+#
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC" "$NAME"
+	do_start
+	case "$?" in
+		0|1) log_end_msg 0 ;;
+		2)   log_end_msg 1 ;;
+	esac
+	;;
+  stop)
+	log_daemon_msg "Stopping $DESC" "$NAME"
+	do_stop
+	case "$?" in
+		0|1) log_end_msg 0 ;;
+		2)   log_end_msg 1 ;;
+	esac
+	;;
+  status)
+       status_of_proc "$NODE_PATH" "$NAME" && exit 0 || exit $?
+       ;;
+  restart)
+	log_daemon_msg "Restarting $DESC" "$NAME"
+	do_stop
+	case "$?" in
+	  0|1)
+		do_start
+		case "$?" in
+			0) log_end_msg 0 ;;
+			1) log_end_msg 1 ;; # Old process is still running
+			*) log_end_msg 1 ;; # Failed to start
+		esac
+		;;
+	  *)
+	  	# Failed to stop
+		log_end_msg 1
+		;;
+	esac
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart}" >&2
+	exit 3
+	;;
+esac

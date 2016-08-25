@@ -1,0 +1,33 @@
+{
+  "name": "gstation-server",
+  "version": "0.3.0",
+  "description": "GStation Server",
+  "private": true,
+  "bin": {
+    "gsrouter": "./cli/router.js",
+    "gsmount.serial": "./cli/mount.serial.js",
+    "gsuuid": "./cli/uuid.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "buffertools": "~2.1.3",
+    "ini": "*",
+    "moment": "*",
+    "optimist": "*",
+    "serialport": "~1.7.4",
+    "struct": "*",
+    "util": "*",
+    "uuid": "*",
+    "zmq": "~2.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@vodka.genee.cn:gstation-server"
+  },
+  "author": "Jia Huang <jia.huang@geneegroup.com>",
+  "license": "Commerical"
+}

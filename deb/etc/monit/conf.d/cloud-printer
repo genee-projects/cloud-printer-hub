@@ -1,0 +1,4 @@
+check process cloud-printer with pidfile "/var/run/cloud-printer.pid"
+    start program = "/etc/init.d/cloud-printer start"
+    stop program  = "/etc/init.d/cloud-printer stop"
+    if mem > 30 MB then restart
