@@ -1,4 +1,4 @@
 {
-    "uuid": "f9be5e62237e3e8b8759f3614a71616d",
-    "server": "tcp://printers.labmai.com:4646"
+    "server": "tcp://0.0.0.0:4646",
+    "rpc": "tcp://0.0.0.0:80"
 }

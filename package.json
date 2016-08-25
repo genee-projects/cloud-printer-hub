@@ -1,16 +1,14 @@
 {
-  "name": "gstation-server",
-  "version": "0.3.0",
-  "description": "GStation Server",
+  "name": "cloud-printer-hub",
+  "version": "0.1.0",
+  "description": "Cloud Printer Hub",
   "private": true,
   "bin": {
-    "gsrouter": "./cli/router.js",
-    "gsmount.serial": "./cli/mount.serial.js",
-    "gsuuid": "./cli/uuid.js"
+    "cloud-printer-hub": "./cli/app.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node cli/app.js"
   },
   "dependencies": {
     "async": "^1.4.2",
@@ -18,15 +16,13 @@
     "ini": "*",
     "moment": "*",
     "optimist": "*",
-    "serialport": "~1.7.4",
-    "struct": "*",
     "util": "*",
     "uuid": "*",
     "zmq": "~2.13.0"
   },
   "repository": {
     "type": "git",
-    "url": "git@vodka.genee.cn:gstation-server"
+    "url": "git@github.com:genee-projects/cloud-printer-hub"
   },
   "author": "Jia Huang <jia.huang@geneegroup.com>",
   "license": "Commerical"
